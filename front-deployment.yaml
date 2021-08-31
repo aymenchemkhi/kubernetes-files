@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: front
+    spec:
+      containers:
+      - image: front:latest
+        imagePullPolicy: Never
+        name: front
+        ports:
+          - containerPort: 4200
+      restartPolicy: Always

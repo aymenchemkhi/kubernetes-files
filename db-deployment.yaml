@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - env:
+            - name: DB_CONNECTION
+              valueFrom:
+                configMapKeyRef:
+                  key: DB_CONNECTION
+                  name: database-env
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_DB
+                  name: database-env
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: database-env
+            - name: TGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  key: TGRES_USER
+                  name: database-env
+            - name: spring.datasource.password
+              valueFrom:
+                configMapKeyRef:
+                  key: spring.datasource.password
+                  name: database-env
+            - name: spring.datasource.url
+              valueFrom:
+                configMapKeyRef:
+                  key: spring.datasource.url
+                  name: database-env
+            - name: spring.datasource.username
+              valueFrom:
+                configMapKeyRef:
+                  key: spring.datasource.username
+                  name: database-env
+            - name: spring.jpa.hibernate.ddl-auto
+              valueFrom:
+                configMapKeyRef:
+                  key: spring.jpa.hibernate.ddl-auto
+                  name: database-env
+            - name: spring.jpa.hibernate.show-sql
+              valueFrom:
+                configMapKeyRef:
+                  key: spring.jpa.hibernate.show-sql
+                  name: database-env
+            - name: spring.jpa.properties.hibernate.dialect
+              valueFrom:
+                configMapKeyRef:
+                  key: spring.jpa.properties.hibernate.dialect
+                  name: database-env
+          image: postgres
+          name: db
+          ports:
+            - containerPort: 5432
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data/
+              name: database-data
+      restartPolicy: Always
+      volumes:
+        - name: database-data
+          persistentVolumeClaim:
+            claimName: database-data
+status: {}
